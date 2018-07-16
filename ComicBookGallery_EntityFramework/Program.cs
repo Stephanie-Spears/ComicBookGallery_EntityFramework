@@ -1,15 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ComicBookGallery_EntityFramework.Models;
 
 namespace ComicBookGallery_EntityFramework
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             using (var context = new Context())
             {
@@ -32,6 +29,17 @@ namespace ComicBookGallery_EntityFramework
     }
 }
 
+/* The first time that we access the context's ComicBooks db set property, EF will check if the db exists, and if not, create it using our Model to generate the tables and columns. */
+/*An .edmx file is an XML file that defines a conceptual model , a storage model , and the mapping between these models. An .edmx file also contains information that is used by the ADO.NET Entity Data Model Designer (Entity Designer) to render a model graphically*/
+
+/* EF generates an in-memory version of the EDMX file using Type Discovery -- which the the process by which EF discovers all of the entities that are part of our model.
+ Ef Starts with compiling a list of entities that have DbSet properties defined in our context. From there, it will walk the available entity relationships to discover any entities that aren't represented by DbSet Properties.
+ For each Entity, EF also compiles a list of the properties, and for each property, various characteristics like data type and nullability. All of this makes a "Conceptual Model". There's also the "Storage Model" which is a representation of the Conceptual Model, to which it gets mapped.
+ The default convention is for the entity to be represented by a table in the database. The name of the table is either the singular or plural version of the Entity class name (depending upon which EF has been configured to).
+ If EF finds a property on the entity whose name matches the convention of ClassNameID or ClassNameId, then EF will add a primary key column to the table with the same name and data type. If the property's data type is Numeric or a GUID (globally unique identifier), then EF will also make the column an identity column.
+ Identity columns are automatically assigned values by the DB when new records are added to the table. EF also adds an entity property that has a setter (public protected or private) as a table column, mapping the property's name to the Column Name and the properties .Net data type to the appropriate SQL Sever Column Data Type. The columns nullability is determined by evaluating if the .Net data type is nullable or not. (Ie. a column mapped with a data type of int wouldn't allow nulls, whereas a column mapped from a property with a data type of string would).
+ */
+
 /* When we use our contacts to persist or retrieve data from the database, EF will open a connection to the database, which is an unmanaged resource (meaning it doesn't automatically have destructors activated when it goes out of scope).
  *Context class inherits from DbContext, which inherits from IDisposable class--the resource management class
  * By calling our Context's dispose method (via DbContext -> IDisposable) we're letting EF know that the DB connection can be closed. We can ensure that the context's Dispose() method will be called by placing the instantiation of the context within a using statement.
@@ -48,3 +56,8 @@ namespace ComicBookGallery_EntityFramework
 /*Entity class "key" properties (properties that are mapped to primary key columns in the database) can be named using the following conventions:
      Id, ID, {ClassName}Id, or {ClassName}ID
  */
+
+/*sqllocaldb info -> in terminal to get localDBs.
+ MSSQLLocalDB is the default LocalDB instance name created, and it is what EF will look for and connect to. The environment is properly configured to support EF development if you see this listed in the db instances
+ ProjectsV13 is created specifically for SQL Server Data Tools and shouldn't be used for application development. SSDT is a set of development tools for Visual Studio.
+     */
