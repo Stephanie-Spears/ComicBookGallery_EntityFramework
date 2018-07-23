@@ -13,25 +13,10 @@ namespace ComicBookGallery_EntityFramework
             {
                 context.Database.Log = (message) => Debug.WriteLine(message);
 
-                //                var comicBooks = context.ComicBooks.ToList();
-
-                var comicBooksQuery = from cb in context.ComicBooks select cb;
-
-                var comicBooks = comicBooksQuery
-                    .Include(cb => cb.Series)
-                    .Where(cb => cb.Series.Title.Contains("man"))
-                    .ToList();
-                foreach (var comicBook in comicBooks)
-                {
-                    Console.WriteLine(comicBook.DisplayText);
-                }
-                Console.WriteLine();
-                Console.WriteLine("# of comic books: {0}", comicBooks.Count);
-
-                /*var comicBooks = context.ComicBooks
-                    .Include(cb => cb.Series)
-                    .Include(cb => cb.Artists.Select(a => a.Artist))
-                    .Include(cb => cb.Artists.Select(a => a.Role))
+                var comicBooks = context.ComicBooks
+                    //                    .Include(cb => cb.Series)
+                    //                    .Include(cb => cb.Artists.Select(a => a.Artist))
+                    //                    .Include(cb => cb.Artists.Select(a => a.Role))
                     .ToList();
 
                 foreach (var comicBook in comicBooks)
@@ -42,7 +27,7 @@ namespace ComicBookGallery_EntityFramework
                     var artistRolesDisplayText = string.Join(", ", artistRoleNames);
                     Console.WriteLine(comicBook.DisplayText);
                     Console.WriteLine(artistRolesDisplayText);
-                }*/
+                }
 
                 Console.ReadLine();
             }
@@ -50,6 +35,11 @@ namespace ComicBookGallery_EntityFramework
     }
 }
 
+/* Eager Loading - A single query to retrieve data for main entity, and also for the related entities. The include mehthod is used to tell EF which entities to load.
+   Lazy Loading - The related entities aren't loaded until their navigation properties are accessed, which is automatically handled by EF.
+   Explicit Loading - Using a load method, you can explicitly load entities.
+
+*/
 /*
  navigation properties allow you to define relationships between entities.
  The Include method can be used in a LINQ query to load related data.
