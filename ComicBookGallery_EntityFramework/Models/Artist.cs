@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComicBookGallery_EntityFramework.Models
 {
@@ -10,6 +11,8 @@ namespace ComicBookGallery_EntityFramework.Models
         }
 
         public int Id { get; set; }
+
+        [Required, StringLength(100)]
         public string Name { get; set; }
 
         public ICollection<ComicBookArtist> ComicBooks { get; set; }
