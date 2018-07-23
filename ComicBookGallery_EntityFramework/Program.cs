@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Diagnostics;
+using System.Net.Mime;
 
 namespace ComicBookGallery_EntityFramework
 {
@@ -12,28 +13,32 @@ namespace ComicBookGallery_EntityFramework
             {
                 context.Database.Log = (message) => Debug.WriteLine(message);
 
-                var comicBooks = context.ComicBooks
-                    //                    .Include(cb => cb.Series)
-                    //                    .Include(cb => cb.Artists.Select(a => a.Artist))
-                    //                    .Include(cb => cb.Artists.Select(a => a.Role))
-                    .ToList();
+                var comicBookId = 1;
+                var comicBook1 = context.ComicBooks.Find(comicBookId);
+                var comicbook2 = context.ComicBooks.Find(comicBookId);
 
-                foreach (var comicBook in comicBooks)
-                {
-                    if (comicBook.Series == null)
-                    {
-                        context.Entry(comicBook)
-                            .Reference(cb => cb.Series)
-                            .Load();
-                    }
-
-                    var artistRoleNames = comicBook.Artists
-                        .Select(a => $"{a.Artist.Name} - {a.Role.Name}")
-                        .ToList();
-                    var artistRolesDisplayText = string.Join(", ", artistRoleNames);
-                    Console.WriteLine(comicBook.DisplayText);
-                    Console.WriteLine(artistRolesDisplayText);
-                }
+                //                var comicBooks = context.ComicBooks
+                //                    //                    .Include(cb => cb.Series)
+                //                    //                    .Include(cb => cb.Artists.Select(a => a.Artist))
+                //                    //                    .Include(cb => cb.Artists.Select(a => a.Role))
+                //                    .ToList();
+                //
+                //                foreach (var comicBook in comicBooks)
+                //                {
+                //                    if (comicBook.Series == null)
+                //                    {
+                //                        context.Entry(comicBook)
+                //                            .Reference(cb => cb.Series)
+                //                            .Load();
+                //                    }
+                //
+                //                    var artistRoleNames = comicBook.Artists
+                //                        .Select(a => $"{a.Artist.Name} - {a.Role.Name}")
+                //                        .ToList();
+                //                    var artistRolesDisplayText = string.Join(", ", artistRoleNames);
+                //                    Console.WriteLine(comicBook.DisplayText);
+                //                    Console.WriteLine(artistRolesDisplayText);
+                //                }
 
                 Console.ReadLine();
             }
@@ -52,6 +57,15 @@ namespace ComicBookGallery_EntityFramework
     EXPLICIT LOADING - Using a load method, you can explicitly load entities.
     -Pros: Gives you exact control over the loading process, can load just part of a collection if you want
     -Cons: Requires more thought and planning
+
+    *To enable lazy loading, navigation properties need to be marked as virtual, which allows EF to create dynamic proxies by sub-classing your entities and overriding your navigation properties.
+    A DbSet query to retrieve a single entity will be generated and executed against the database even if the entity is already in the context.
+    When explicitly loading entities, related entities are loaded using the Load method on the related entity's entry.
+    * The SingleOrDefault LINQ operator will throw an exception if more than one entity is found whereas the FirstOrDefault operator returns the first entity if more than one is found. The Single and First LINQ operators go a step further and enforce that at least one entity is found by throwing an exception if no matching entities are found.
+ * When lazy loading related entities, related entities are not loaded until their navigation properties are accessed for the first time.
+ * Only the last call to the OrderBy or OrderByDescending methods will be used. To sort on more than one column, you can use the ThenBy or ThenByDescending operators
+ * When eagerly loading related entities, you write a single query that not only retrieves the data for the main entity but also the data for the related entities.
+ * The DbSet Find method will check if the entity is being tracked by the context, and if it is, return a reference to that entity, otherwise it'll retrieve the entity from the database.
 */
 
 /*
