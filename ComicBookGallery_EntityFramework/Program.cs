@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Data.Entity;
-using ComicBookGallery_EntityFramework.Models;
+using System.Diagnostics;
 
 namespace ComicBookGallery_EntityFramework
 {
@@ -11,7 +11,24 @@ namespace ComicBookGallery_EntityFramework
         {
             using (var context = new Context())
             {
-                var comicBooks = context.ComicBooks
+                context.Database.Log = (message) => Debug.WriteLine(message);
+
+                //                var comicBooks = context.ComicBooks.ToList();
+
+                var comicBooksQuery = from cb in context.ComicBooks select cb;
+
+                var comicBooks = comicBooksQuery
+                    .Include(cb => cb.Series)
+                    .Where(cb => cb.Series.Title.Contains("man"))
+                    .ToList();
+                foreach (var comicBook in comicBooks)
+                {
+                    Console.WriteLine(comicBook.DisplayText);
+                }
+                Console.WriteLine();
+                Console.WriteLine("# of comic books: {0}", comicBooks.Count);
+
+                /*var comicBooks = context.ComicBooks
                     .Include(cb => cb.Series)
                     .Include(cb => cb.Artists.Select(a => a.Artist))
                     .Include(cb => cb.Artists.Select(a => a.Role))
@@ -25,13 +42,21 @@ namespace ComicBookGallery_EntityFramework
                     var artistRolesDisplayText = string.Join(", ", artistRoleNames);
                     Console.WriteLine(comicBook.DisplayText);
                     Console.WriteLine(artistRolesDisplayText);
-                }
+                }*/
 
                 Console.ReadLine();
             }
         }
     }
 }
+
+/*
+ navigation properties allow you to define relationships between entities.
+ The Include method can be used in a LINQ query to load related data.
+ When defining a many-to-many relationship without defining an explicit bridge entity class, Entity Framework will automatically add an "implicit" bridge table to the database in order to store the relationship data.
+ "Read only" or "getter only" entity properties do not need to be decorated with the "NotMapped" data annotation attribute in order for Entity Framework to ignore them when generating the in-memory representation of the model.
+ Defining an explicit Many-to-Many bridge entity class allows you to include additional properties beyond the properties that are needed to define the relationship.
+     */
 
 /* The first time that we access the context's ComicBooks db set property, EF will check if the db exists, and if not, create it using our Model to generate the tables and columns. */
 /*An .edmx file is an XML file that defines a conceptual model , a storage model , and the mapping between these models. An .edmx file also contains information that is used by the ADO.NET Entity Data Model Designer (Entity Designer) to render a model graphically*/
