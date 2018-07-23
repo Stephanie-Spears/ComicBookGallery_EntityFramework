@@ -6,12 +6,12 @@ namespace ComicBookGallery_EntityFramework.Models
     {
         public Artist()
         {
-            ComicBooks = new List<ComicBook>();
+            ComicBooks = new List<ComicBookArtist>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public ICollection<ComicBook> ComicBooks { get; set; }
+        public ICollection<ComicBookArtist> ComicBooks { get; set; }
     }
 }
