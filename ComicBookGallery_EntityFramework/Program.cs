@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Data.Entity;
 using System.Diagnostics;
 
 namespace ComicBookGallery_EntityFramework
@@ -21,6 +20,13 @@ namespace ComicBookGallery_EntityFramework
 
                 foreach (var comicBook in comicBooks)
                 {
+                    if (comicBook.Series == null)
+                    {
+                        context.Entry(comicBook)
+                            .Reference(cb => cb.Series)
+                            .Load();
+                    }
+
                     var artistRoleNames = comicBook.Artists
                         .Select(a => $"{a.Artist.Name} - {a.Role.Name}")
                         .ToList();
@@ -35,11 +41,19 @@ namespace ComicBookGallery_EntityFramework
     }
 }
 
-/* Eager Loading - A single query to retrieve data for main entity, and also for the related entities. The include mehthod is used to tell EF which entities to load.
-   Lazy Loading - The related entities aren't loaded until their navigation properties are accessed, which is automatically handled by EF.
-   Explicit Loading - Using a load method, you can explicitly load entities.
+/*
+    EAGER LOADING- A single query to retrieve data for main entity, and also for the related entities. The include method is used to tell EF which entities to load.
+    -Pros: Fewer queries against the database, fewer surprises because it forces you to plan what data you'll need
+    -Cons: Easy to load more data than you actually need
 
+    LAZY LOADING - The related entities aren't loaded until their navigation properties are accessed, which is automatically handled by EF.
+    -Pros: Easy to use, only loads the data you need
+    -Cons: Can result in a lot of queries
+    EXPLICIT LOADING - Using a load method, you can explicitly load entities.
+    -Pros: Gives you exact control over the loading process, can load just part of a collection if you want
+    -Cons: Requires more thought and planning
 */
+
 /*
  navigation properties allow you to define relationships between entities.
  The Include method can be used in a LINQ query to load related data.
