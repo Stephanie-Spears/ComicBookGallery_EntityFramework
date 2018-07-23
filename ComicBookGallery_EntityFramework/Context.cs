@@ -10,7 +10,7 @@ namespace ComicBookGallery_EntityFramework
         {
             //            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<Context>());
             //            Database.SetInitializer(new CreateDatabaseIfNotExists<Context>());
-            Database.SetInitializer(new DropCreateDatabaseAlways<Context>());
+            Database.SetInitializer(new DatabaseInitializer());
         }
 
         public DbSet<ComicBook> ComicBooks { get; set; }
