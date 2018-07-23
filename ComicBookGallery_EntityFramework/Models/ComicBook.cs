@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ComicBookGallery_EntityFramework.Models
 {
     public class ComicBook
     {
         // Id, ID, ComicBookId, ComicBookID -> All ok naming conventions
+
+        public ComicBook()
+        {
+            Artists = new List<Artist>();
+        }
+
         public int Id { get; set; }
 
         public int SeriesId { get; set; }
@@ -13,6 +20,7 @@ namespace ComicBookGallery_EntityFramework.Models
         public DateTime PublishedOn { get; set; }
         public decimal? AverageRating { get; set; }
         public Series Series { get; set; }
+        public ICollection<Artist> Artists { get; set; }
 
         public string DisplayText
         {
@@ -25,7 +33,9 @@ namespace ComicBookGallery_EntityFramework.Models
 
 {Navigation Property Name}{Principal Primary Key Property Name}
 {Principal Class Name}{Primary Key Property Name}
-{Principal Primary Key Property Name}*/
+{Principal Primary Key Property Name}
+
+ */
 
 /*To Retrieve data from our database, we need to create a context model. All communication from our app to our DB flows through the context.
  The Context defines the available Entity sets and manages the relationships between those entities. It's used to retrieve entities from the DB, persist changed entities to the database, and remove entities from the DB.
